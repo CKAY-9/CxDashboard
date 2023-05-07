@@ -23,8 +23,8 @@
     "websocket": "^1.0.34"
   },
   "devDependencies": {
-    "@types/cookie-parser": "^1.4.3",
     "@types/axios": "^0.14.0",
+    "@types/cookie-parser": "^1.4.3",
     "@types/node": "^20.1.0",
     "@types/websocket": "^1.0.5"
   }

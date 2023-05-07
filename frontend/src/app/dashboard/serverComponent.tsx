@@ -4,6 +4,9 @@ import style from "./dashboard.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import axios, { AxiosResponse } from "axios";
+import { ServerInfo } from "@/api/interfaces";
+import { transGameToText } from "@/utils/information";
 
 const DashboardPageServer = async () => {
     const data = await getUserData();
@@ -24,8 +27,28 @@ const DashboardPageServer = async () => {
                     <h2>Hello, <span className={style.name}>{data.name}</span></h2>
                 </section>
                 {data.linkedServers.length >= 1 ?
-                    <>
-                    </>
+                    <div className={style.servers}>
+                        {data.linkedServers.map(async (server: string, index: number) => {
+                            const req: AxiosResponse<ServerInfo> = await axios({
+                                "method": "GET",
+                                "url": process.env.NEXT_PUBLIC_DASHBOARD_API + "/integration/info",
+                                "headers": {
+                                    "authorization": `${data.token}`
+                                },
+                                "params": {
+                                    "dashID": server
+                                }
+                            });
+
+                            return (
+                                <Link href={`/dashboard/${index + 1}`} className={style.serverPreview}>
+                                    <h1>{req.data.serverName.length <= 0 ? <>Server name not set</> : <>{req.data.serverName}</> }</h1>
+                                    <h2>{transGameToText(req.data.game)}</h2>
+                                    <h3>{req.data.active ? <>Online</> : <>Offline</>}</h3>
+                                </Link>
+                            );
+                        })}
+                    </div>
                 :
                     <>
                         <h1 style={{"textAlign": "center"}}>You have no linked servers!</h1>

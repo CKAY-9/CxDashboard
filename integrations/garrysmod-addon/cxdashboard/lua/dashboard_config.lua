@@ -4,4 +4,4 @@ DASHBOARD = {} -- Don't edit this
 DASHBOARD.websocketServer = "ws://localhost:3002"
 
 -- Points to the CxDashboard API server
-DASHBOARD.apiServer = "http://localhost:3001"
+DASHBOARD.apiServer = "http://loopback.gmod/api"

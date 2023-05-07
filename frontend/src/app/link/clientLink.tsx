@@ -3,8 +3,15 @@
 import { NextPage } from "next";
 import style from "./link.module.scss";
 import { BaseSyntheticEvent, useState } from "react";
+import { linkGameServer } from "@/api/game";
+import { getCookie } from "@/utils/cookie";
+import { redirect } from "next/navigation";
 
-const GMod = () => {
+interface GameProps {
+    changeDashID: any;
+}
+
+const GMod = (props: GameProps) => {
     return (
         <>
             <title>Link - Garry's Mod</title>
@@ -14,7 +21,7 @@ const GMod = () => {
                 <li>Restart your server</li>
                 <li>Paste the unique server ID generated in the server console</li>
             </ul>
-            <input type="text" name="serverID" id="serverID" placeholder="Server ID" />
+            <input onChange={(e: BaseSyntheticEvent) => props.changeDashID(e.target.value)} type="text" name="serverID" id="serverID" placeholder="Server ID" />
             <input type="submit" value="Connect Garry's Mod Server" style={{"width": "fit-content"}} />
         </>
     )
@@ -38,8 +45,10 @@ const Minecraft = () => {
 
 const ClientLink: NextPage<{children: any}> = ({children}) => {
     const [game, setGame] = useState<string>("gmod");
+    const [dashID, setDashID] = useState<string>("");
+
     const views: any = {
-        "gmod": <GMod></GMod>,
+        "gmod": <GMod changeDashID={setDashID}></GMod>,
         "mc": <Minecraft></Minecraft>
     }
 
@@ -52,6 +61,15 @@ const ClientLink: NextPage<{children: any}> = ({children}) => {
             view.style.opacity = "1";
         }, 250);
     }
+
+    const link = async (e: BaseSyntheticEvent) => {
+        e.preventDefault();
+        const token = getCookie("token");
+        if (token === null || token === undefined) {
+            redirect("/login");
+        }
+        await linkGameServer(dashID, token);
+    }
     
     return (
         <>
@@ -59,7 +77,7 @@ const ClientLink: NextPage<{children: any}> = ({children}) => {
             {children}
             <main className={style.linkContainer}>
                 <h1>Link your game server!</h1>
-                <form>
+                <form onSubmit={link}>
                     <label htmlFor="Game">Select Game</label>
                     <select onChange={(e: BaseSyntheticEvent) => changeView(e)} name="game" id="game" defaultValue="gmod">
                         <option value="gmod">Garry's Mod</option>

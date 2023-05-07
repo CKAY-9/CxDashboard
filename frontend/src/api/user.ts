@@ -1,14 +1,6 @@
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import axios, { AxiosResponse } from "axios";
-
-export interface User {
-    avatar: string,
-    name: string,
-    token: string,
-    id: string,
-    linkedServers: any[]
-}
+import { User } from "./interfaces";
 
 export const getUserData = async () => {
     const cookieStore = cookies();

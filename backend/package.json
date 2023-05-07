@@ -1,6 +1,6 @@
 {
 	"main": "./dist/index.js",
-	"author": "Cameron",
+	"author": "Camerxn",
 	"scripts": {
 		"dev": "nodemon .",
 		"watch": "tsc -w",
