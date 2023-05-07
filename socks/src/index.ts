@@ -51,6 +51,24 @@ wss.on("connection", (ws: WebSocket) => {
     })
 });
 
+const fetchNewServers = async () => {
+    await client.connect();
+
+    const newServers = await db.collection("servers").find({}).toArray();
+    for (const _s of newServers) {
+        for (const s of servers) {
+            if (s.dashID === _s.dashID) {
+                continue;
+            }
+            servers.push(_s);
+        }
+    }
+
+    console.log("Updated server list!");
+
+    await client.close();
+}
+
 const PORT = Number.parseInt(process.env.WS_PORT) || 3002;
 server.listen(PORT, "0.0.0.0", async () => {
     await client.connect();
@@ -62,4 +80,7 @@ server.listen(PORT, "0.0.0.0", async () => {
     }
     await client.close();
     console.log(`Started CxDashboard WebSocket server on port ${PORT}`);
+    setInterval(async () => {
+        await fetchNewServers();
+    }, 1000 * 60);
 });

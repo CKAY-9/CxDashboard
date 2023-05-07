@@ -56,13 +56,6 @@ DASHBOARD.socks = function()
     function socket:onDisconnected()
     end
 
-    local _delay = 0
-    hook.Add("Think", "CXDB.ReconnentCycle", function()
-        if (CurTime() < _delay) then return end
-        socket:open()
-        _delay = CurTime() + 5
-    end)
-
     socket:open()
 end
 

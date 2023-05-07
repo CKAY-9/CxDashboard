@@ -47,9 +47,21 @@ export const SetServerName = (props: {dashID: string}) => {
     );
 }
 
-export const SocketComponent = (props: {dashID: string}) => {
+export const GarrysMod = (props: {information: object}) => {
+    return (
+        <>
+        </>
+    );
+}
+
+export const SocketComponent = (props: {dashID: string, gameType: string}) => {
     const [online, setOnline] = useState<boolean>(false);
     const [serverInfo, setServerInfo] = useState<any>({});
+
+    const views: any = {
+        "gmod": <GarrysMod information={serverInfo}></GarrysMod>
+    }
+
     const socket: CxSocket = new CxSocket(props.dashID);
     socket.events.push(
         {
@@ -94,15 +106,7 @@ export const SocketComponent = (props: {dashID: string}) => {
         <section className={style.panel}>
             <h1>General Information</h1>
             <section className={style.overview}>
-                {Object.entries(serverInfo).map(([k, v]: any, i) => {
-                    if (k === "id" || k === "dashID") return;
-                    return (
-                        <div key={i} className={style.card}>
-                            <h1>{k}</h1>
-                            <span>{v}</span>
-                        </div>
-                    )
-                })}
+                {views[props.gameType]}
             </section>
         </section>
     );

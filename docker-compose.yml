@@ -12,3 +12,9 @@ services:
     build: ./socks
     ports: 
       - "3002:3002"
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD: 
