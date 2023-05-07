@@ -41,7 +41,7 @@ const DashboardPageServer = async () => {
                             });
 
                             return (
-                                <Link href={`/dashboard/${index + 1}`} className={style.serverPreview}>
+                                <Link key={index} href={`/dashboard/${index + 1}`} className={style.serverPreview}>
                                     <h1>{req.data.serverName.length <= 0 ? <>Server name not set</> : <>{req.data.serverName}</> }</h1>
                                     <h2>{transGameToText(req.data.game)}</h2>
                                     <h3>{req.data.active ? <>Online</> : <>Offline</>}</h3>

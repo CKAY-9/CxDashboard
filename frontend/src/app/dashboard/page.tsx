@@ -5,6 +5,7 @@ const Page = async () => {
     return (
         <>
             <DashboardPageClient>
+                {/* @ts-expect-error Async Server Component */}
                 <DashboardPageServer />
             </DashboardPageClient>
         </>

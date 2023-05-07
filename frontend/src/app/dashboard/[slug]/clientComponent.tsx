@@ -5,11 +5,12 @@ import style from "./server.module.scss";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { getCookie } from "@/utils/cookie";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { CxSocket } from "@/socket/cxsocket";
 
 export const SetServerName = (props: {dashID: string}) => {
     const [serverName, setServerName] = useState<string>("");
+    const router = useRouter();
 
     const submit = async (e: BaseSyntheticEvent) => {
         e.preventDefault();
@@ -26,7 +27,7 @@ export const SetServerName = (props: {dashID: string}) => {
         });
 
         if (req.status === 200) {
-            useRouter().reload();
+            router.refresh();
         }
     }
 
@@ -50,7 +51,6 @@ export const SocketComponent = (props: {dashID: string}) => {
     const [online, setOnline] = useState<boolean>(false);
     const [serverInfo, setServerInfo] = useState<any>({});
     const socket: CxSocket = new CxSocket(props.dashID);
-    if (socket === undefined) return;
     socket.events.push(
         {
             "id": "initialConnect",
@@ -84,8 +84,8 @@ export const SocketComponent = (props: {dashID: string}) => {
 
     if (!online) {
         return (
-            <section style={{"display": "flex", "alignItems": "center", "justifyContent": "center"}}>
-                <h1 style={{"margin": "0", "fontSize": "4rem"}}>Server currently offline!</h1>
+            <section style={{"display": "flex", "alignItems": "center", "justifyContent": "center", "width": "100%"}}>
+                <h1 style={{"margin": "0", "fontSize": "4rem", "textAlign": "center"}}>Server currently offline!</h1>
             </section>
         )
     }
@@ -94,10 +94,10 @@ export const SocketComponent = (props: {dashID: string}) => {
         <section className={style.panel}>
             <h1>General Information</h1>
             <section className={style.overview}>
-                {Object.entries(serverInfo).map(([k, v], i) => {
+                {Object.entries(serverInfo).map(([k, v]: any, i) => {
                     if (k === "id" || k === "dashID") return;
                     return (
-                        <div className={style.card}>
+                        <div key={i} className={style.card}>
                             <h1>{k}</h1>
                             <span>{v}</span>
                         </div>

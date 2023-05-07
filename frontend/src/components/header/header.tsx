@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { User } from "@/api/user";
 import Image from "next/image";
 import HeaderSignout from "./headerClient";
+import { User } from "@/api/interfaces";
 
 interface HeaderProps {
     userData: User | undefined
@@ -13,7 +13,7 @@ const Header = (props: HeaderProps) => {
                 <Link href="/"><h3>CxDashboard</h3></Link>
             </section>
             <section id="right">
-                {(props.userData !== undefined) ?
+                {props.userData !== undefined && props.userData !== null ?
                     <>
                         <Link href="/dashboard">Dashboard</Link>
                         <HeaderSignout></HeaderSignout>

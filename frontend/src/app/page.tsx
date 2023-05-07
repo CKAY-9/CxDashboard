@@ -23,12 +23,12 @@ const Home = async () => {
 				<div className="seperator"></div>
 				<section className={style.feature}>
 					<h1>Interact with your Server</h1>
-					<p>Notice players going a bit wild? You can easily manage them with CxDashboard's panel to server interactions. </p>
+					<p>Notice players going a bit wild? You can easily manage them with CxDashboard&apos;s panel to server interactions. </p>
 				</section>
 				<div className="seperator"></div>
 				<section className={style.feature}>
 					<h1>Easy-to-use Dashboard</h1>
-					<p>CxDashboard's dashboard is made to be easy-to-use and accessible for everyone.</p>
+					<p>CxDashboard&apos;s dashboard is made to be easy-to-use and accessible for everyone.</p>
 				</section>
 			</main>
 		</>

@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: row;
     color: white;
+    position: absolute;
+    height: 92vh;
 
     nav {
         background-color: rgb(var(--fg));

@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "nodemon .",
 		"watch": "tsc -w",
-		"build": "tsc --build --clean",
+		"build": "tsc --build",
 		"start": "node ."
 	},
 	"dependencies": {
@@ -14,7 +14,8 @@
 		"crypto-js": "^4.1.1",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
-		"mongodb": "^5.4.0"
+		"mongodb": "^5.4.0",
+		"typescript": "^5.04"
 	},
 	"devDependencies": {
 		"@types/axios": "^0.14.0",

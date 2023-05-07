@@ -6,6 +6,7 @@ const LinkServerPage = async () => {
         <>
             <title>Link</title>
             <ClientLink>
+                {/* @ts-expect-error Async Server Component */}
                 <ServerLink></ServerLink>
             </ClientLink>
         </>

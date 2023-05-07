@@ -3,9 +3,9 @@
 import { NextPage } from "next";
 import style from "./link.module.scss";
 import { BaseSyntheticEvent, useState } from "react";
-import { linkGameServer } from "@/api/game";
 import { getCookie } from "@/utils/cookie";
-import { redirect } from "next/navigation";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface GameProps {
     changeDashID: any;
@@ -14,7 +14,7 @@ interface GameProps {
 const GMod = (props: GameProps) => {
     return (
         <>
-            <title>Link - Garry's Mod</title>
+            <title>Link - Garry&apos;s Mod</title>
             <ul style={{"textAlign": "left", "listStyle": "numeric"}}>
                 <li>Download the CxDashboard Addon</li>
                 <li>Edit the <code>cxdb/lua/dashboard_config.lua</code> file</li>
@@ -47,6 +47,8 @@ const ClientLink: NextPage<{children: any}> = ({children}) => {
     const [game, setGame] = useState<string>("gmod");
     const [dashID, setDashID] = useState<string>("");
 
+    const router = useRouter();
+
     const views: any = {
         "gmod": <GMod changeDashID={setDashID}></GMod>,
         "mc": <Minecraft></Minecraft>
@@ -66,9 +68,23 @@ const ClientLink: NextPage<{children: any}> = ({children}) => {
         e.preventDefault();
         const token = getCookie("token");
         if (token === null || token === undefined) {
-            redirect("/login");
+            router.push("/login");
         }
-        await linkGameServer(dashID, token);
+        const request = await axios({
+            "method": "POST",
+            "url": process.env.NEXT_PUBLIC_DASHBOARD_API + "/integration/link",
+            "data": {
+                "dashID": dashID
+            },
+            "headers": {
+                "authorization": `${token}`
+            }
+        });
+
+        if (request.status === 200) {
+            window.location.href = "/dashboard";
+            router.push(`/dashboard`);
+        }
     }
     
     return (
@@ -80,7 +96,7 @@ const ClientLink: NextPage<{children: any}> = ({children}) => {
                 <form onSubmit={link}>
                     <label htmlFor="Game">Select Game</label>
                     <select onChange={(e: BaseSyntheticEvent) => changeView(e)} name="game" id="game" defaultValue="gmod">
-                        <option value="gmod">Garry's Mod</option>
+                        <option value="gmod">Garry&apos;s Mod</option>
                         <option value="mc">Minecraft</option>
                     </select>
 

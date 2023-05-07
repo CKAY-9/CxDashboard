@@ -22,6 +22,6 @@ app.use("/integration", integrationRouter);
 
 // Run Express
 const PORT = Number.parseInt(process.env.API_PORT) || 3001;
-app.listen(PORT, "127.0.0.1", async () => {
+app.listen(PORT, "0.0.0.0", async () => {
     console.log(`Started CxDashboard on port ${PORT}`);
 });

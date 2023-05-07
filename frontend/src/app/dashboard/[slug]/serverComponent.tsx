@@ -2,12 +2,10 @@ import { ServerInfo } from "@/api/interfaces";
 import { getUserData } from "@/api/user";
 import Header from "@/components/header/header";
 import axios, { AxiosResponse } from "axios";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import style from "./server.module.scss";
 import { SetServerName, SocketComponent } from "./clientComponent";
 import { transGameToText } from "@/utils/information";
-import { CxSocket } from "@/socket/cxsocket";
 
 interface ServerPageProps {
     params: any

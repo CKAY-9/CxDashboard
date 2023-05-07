@@ -32,21 +32,22 @@ integrationRouter.post("/link", async (req, res) => {
     const token = req.headers.authorization;
     const dashID = req.body.dashID;
     // Check user validity
-    await client.connect()
+    await client.connect();
     const user = await db.collection("users").findOne({"token": token});
     if (!user) {
+        await client.close();
         return res.status(401);
     }
     // Check DashID
     if (!(await db.collection("servers").findOne({"dashID": dashID}))) {
+        await client.close();
         return res.status(404);
     }
     // Update Server and User
     await db.collection("users").updateOne({"token": token}, {$push: {"linkedServers": dashID}}, {"upsert": true});
     await db.collection("servers").updateOne({"dashID": dashID}, {$push: {"allowedUsers": user.id}}, {"upsert": true});
+    res.status(200).json({"dashID": dashID, "id": user.linkedServers.lenght + 1});
     await client.close();
-
-    res.status(200).json({"dashID": dashID});
 });
 
 integrationRouter.get("/info", async (req, res) => {
@@ -63,11 +64,11 @@ integrationRouter.get("/info", async (req, res) => {
     await client.connect()
     const user = await db.collection("users").findOne({"token": token});
     if (!user) {
+        await client.close();
         return res.status(401);
     }
     const serverInfo = await db.collection("servers").findOne({"dashID": dashID});
     await client.close();
-
     return res.status(200).json(serverInfo);
 });
 
@@ -95,8 +96,4 @@ integrationRouter.post("/changeServerName", async (req, res) => {
     await client.close();
 
     return res.status(200);
-});
-
-integrationRouter.get("/allSockets", async (req, res) => {
-    
 });

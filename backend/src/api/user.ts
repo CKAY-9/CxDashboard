@@ -12,6 +12,5 @@ userRouter.get("/info", async (req, res) => {
     await client.connect();
     const userData = await db.collection("users").findOne({"token": token});
     await client.close();
-
-    res.status(200).json(userData);
+    return res.status(200).json({user: userData});
 });

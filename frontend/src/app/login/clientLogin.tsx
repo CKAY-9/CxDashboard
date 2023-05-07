@@ -7,14 +7,15 @@ import { useEffect } from "react";
 const ClientLogin = () => {
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
+    const docReady = typeof(document);
 
     useEffect(() => {
-        if (typeof(document) === undefined) return;
+        if (docReady === undefined) return;
         if (token !== null) {
             setCookie("token", token, 365);
             redirect("/dashboard");
         }
-    }, [typeof(document)]);
+    }, [docReady, token]);
 
     return (
         <>
