@@ -1,6 +1,7 @@
 import { getUserData } from "@/api/user";
 import Header from "@/components/header/header";
 import style from "./home.module.scss";
+import Footer from "@/components/footer/footer";
 
 const Home = async () => {
 	const data = await getUserData();
@@ -31,6 +32,8 @@ const Home = async () => {
 					<p>CxDashboard&apos;s dashboard is made to be easy-to-use and accessible for everyone.</p>
 				</section>
 			</main>
+
+			<Footer></Footer>
 		</>
 	);
 }

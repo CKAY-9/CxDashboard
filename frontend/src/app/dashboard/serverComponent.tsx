@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import axios, { AxiosResponse } from "axios";
 import { ServerInfo } from "@/api/interfaces";
 import { transGameToText } from "@/utils/information";
+import Footer from "@/components/footer/footer";
 
 const DashboardPageServer = async () => {
     const data = await getUserData();
