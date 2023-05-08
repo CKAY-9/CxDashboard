@@ -7,6 +7,7 @@ import axios from "axios";
 import { getCookie } from "@/utils/cookie";
 import { useRouter } from "next/navigation";
 import { CxSocket } from "@/socket/cxsocket";
+import Image from "next/image";
 
 export const SetServerName = (props: {dashID: string}) => {
     const [serverName, setServerName] = useState<string>("");
@@ -47,22 +48,87 @@ export const SetServerName = (props: {dashID: string}) => {
     );
 }
 
-export const GarrysMod = (props: {information: object}) => {
+export const GarrysMod = (props: {socket: CxSocket}) => {
+    interface ServerData {
+        gamemode: string,
+        avgPing: number,
+        id: string,
+        plyCount: number,
+        dashID: string,
+        staffCount: 0,
+        map: string
+    }
+
+    const [serverInfo, setServerInfo] = useState<ServerData>({
+        "avgPing": 0,
+        "gamemode": "Loading...",
+        "map": "Loading...",
+        "plyCount": 0,
+        "staffCount": 0,
+        "dashID": "",
+        "id": ""
+    });
+
+    props.socket.events.push(
+        {
+            "id": "updateServer",
+            "do": (data: any) => {
+                console.log(data);
+                setServerInfo(data);
+            }
+        }
+    );
+
     return (
         <>
+            <section className={style.panel}>
+                <h1>General Information</h1>
+                <section className={style.overview}>
+                    <div className={style.card}>
+                        <div className={style.img}>
+                            <Image src="/dashboard/ping.svg" alt="Dashboard Image" fill></Image>
+                        </div>
+                        <span>Average Ping: {Math.round(serverInfo?.avgPing)}ms</span>
+                    </div>
+                    <div className={style.card}>
+                        <div className={style.img}>
+                            <Image src="/dashboard/map.svg" alt="Dashboard Image" fill></Image>
+                        </div>
+                        <span>Map: {serverInfo?.map}</span>
+                    </div>
+                    <div className={style.card}>
+                        <div className={style.img}>
+                            <Image src="/dashboard/players.svg" alt="Dashboard Image" fill></Image>
+                        </div>
+                        <span>Player Count: {serverInfo?.plyCount}</span>
+                    </div>
+                    <div className={style.card}>
+                        <div className={style.img}>
+                            <Image src="/dashboard/staff.svg" alt="Dashboard Image" fill></Image>
+                        </div>
+                        <span>Staff Count: {serverInfo?.staffCount}</span>
+                    </div>
+                    <div className={style.card}>
+                        <div className={style.img}>
+                            <Image src="/dashboard/game.svg" alt="Dashboard Image" fill></Image>
+                        </div>
+                        <span>Gamemode: {serverInfo?.gamemode}</span>
+                    </div>
+                </section>
+            </section>
         </>
     );
 }
 
 export const SocketComponent = (props: {dashID: string, gameType: string}) => {
     const [online, setOnline] = useState<boolean>(false);
-    const [serverInfo, setServerInfo] = useState<any>({});
-
-    const views: any = {
-        "gmod": <GarrysMod information={serverInfo}></GarrysMod>
-    }
 
     const socket: CxSocket = new CxSocket(props.dashID);
+
+    const views: any = {
+        "gmod": <GarrysMod socket={socket}></GarrysMod>
+    }
+    
     socket.events.push(
         {
             "id": "initialConnect",
@@ -84,12 +150,6 @@ export const SocketComponent = (props: {dashID: string, gameType: string}) => {
             "do": (data: {id: string, online: boolean}) => {
                 setOnline(data.online)
             }
-        },
-        {
-            "id": "updateServer",
-            "do": (data: any) => {
-                setServerInfo(data);
-            }
         }
     )
     socket.connect();
@@ -103,12 +163,9 @@ export const SocketComponent = (props: {dashID: string, gameType: string}) => {
     }
 
     return (
-        <section className={style.panel}>
-            <h1>General Information</h1>
-            <section className={style.overview}>
-                {views[props.gameType]}
-            </section>
-        </section>
+        <>
+            {views[props.gameType]}
+        </>
     );
 }
 

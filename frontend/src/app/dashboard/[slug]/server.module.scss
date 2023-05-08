@@ -4,10 +4,12 @@
     color: white;
     position: absolute;
     height: 92vh;
+    width: 100vw;
 
     nav {
         background-color: rgb(var(--fg));
         padding: 1rem 2rem;
+        max-width: 10rem;
     }
 
     section {
@@ -19,6 +21,8 @@
         background-color: rgb(var(--fg));
         border-radius: 15px;
         padding: 2rem 3rem;
+        flex: 1;
+        box-shadow: var(--shdw2);
 
         .overview {
             display: grid;
@@ -35,8 +39,20 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                gap: 1rem;
+
+                .img {
+                    position: relative;
+                    width: 3rem;
+                    height: 3rem;
+
+                    img {
+                        filter: invert(1);
+                    }
+                }
 
                 h1 {
+                    margin: 5px;
                     text-transform: capitalize;
                 }
             }

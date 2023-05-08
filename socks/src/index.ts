@@ -25,28 +25,32 @@ wss.on("connection", (ws: WebSocket) => {
     ws.send(JSON.stringify({"id": "initialConnect"}));
     // Message handlers
     ws.on("message", (data) => {
-        const dParse = JSON.parse(data.toString());
-        console.log(dParse);
-        switch (dParse.id) {
-            case "clientConnect":
-                dashIDToServer(dParse.dashID).clients.push(ws);
-                ws.send(JSON.stringify({
-                    "id": "connectionResponse",
-                    "online": dashIDToServer(dParse.dashID).gameServer !== undefined
-                }));
-                break;
-            case "gameConnect":
-                dashIDToServer(dParse.dashID).gameServer = ws;
-                for (const sock of dashIDToServer(dParse.dashID).clients) {
-                    sock.send(JSON.stringify({
-                        "id": "updateServerStatus",
+        try {
+            const dParse = JSON.parse(data.toString());
+            console.log(dParse);
+            switch (dParse.id) {
+                case "clientConnect":
+                    dashIDToServer(dParse.dashID).clients.push(ws);
+                    ws.send(JSON.stringify({
+                        "id": "connectionResponse",
                         "online": dashIDToServer(dParse.dashID).gameServer !== undefined
                     }));
-                }
-                break;
-            case "updateServer":
-                dashIDToServer(dParse.dashID).updateInfo(dParse);
-                break;
+                    break;
+                case "gameConnect":
+                    dashIDToServer(dParse.dashID).gameServer = ws;
+                    for (const sock of dashIDToServer(dParse.dashID).clients) {
+                        sock.send(JSON.stringify({
+                            "id": "updateServerStatus",
+                            "online": dashIDToServer(dParse.dashID).gameServer !== undefined
+                        }));
+                    }
+                    break;
+                case "updateServer":
+                    dashIDToServer(dParse.dashID).updateInfo(dParse);
+                    break;
+            }
+        } catch (e) {
+            console.log(e);
         }
     })
 });
@@ -54,17 +58,20 @@ wss.on("connection", (ws: WebSocket) => {
 const fetchNewServers = async () => {
     await client.connect();
 
+    const oldLength = servers.length;
     const newServers = await db.collection("servers").find({}).toArray();
     for (const _s of newServers) {
         for (const s of servers) {
             if (s.dashID === _s.dashID) {
                 continue;
             }
-            servers.push(_s);
+            servers.push(new Server(_s.dashID));
         }
     }
 
-    console.log("Updated server list!");
+    if (oldLength != servers.length) {
+        console.log("Updated server list!");
+    }
 
     await client.close();
 }

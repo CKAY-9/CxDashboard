@@ -1,5 +1,7 @@
 # CxDashboard
 
+**A Proof of Concept Dashboard for Game Servers**
+
 | Folder        | Purpose                                                               |
 |---------------|-----------------------------------------------------------------------|
 | /backend      | Endpoints for websockets (game integrations) and frontend (ExpressJS) |

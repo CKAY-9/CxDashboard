@@ -11,8 +11,7 @@
     "axios": "^1.4.0",
     "dotenv": "^16.0.3",
     "mongodb": "^5.4.0",
-    "ws": "^8.13.0",
-    "typescript": "^5.04"
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

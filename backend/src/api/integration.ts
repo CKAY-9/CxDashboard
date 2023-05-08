@@ -86,9 +86,11 @@ integrationRouter.post("/changeServerName", async (req, res) => {
     // Check user validity
     await client.connect()
     if (!(await db.collection("users").findOne({"token": token}))) {
+        await client.close();
         return res.status(401);
     }
     if (!(await db.collection("servers").findOne({"dashID": dashID}))) {
+        await client.close();
         return res.status(401);
     }
 

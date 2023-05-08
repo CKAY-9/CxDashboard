@@ -54,6 +54,14 @@ DASHBOARD.socks = function()
     end
 
     function socket:onDisconnected()
+        local d = 0
+        hook.Add("Think", "CXDB.ReconnectCycle", function()
+            if (CurTime() < d) then return end
+
+            socket:open()
+
+            d = CurTime() + 5
+        end)
     end
 
     socket:open()
@@ -64,6 +72,7 @@ timer.Simple(0, function()
     if (DASHBOARD.data["dashID"] == nil) then
         http.Fetch(DASHBOARD.apiServer .. "/integration/dashID?game=gmod",
             function(body)
+                print(body)
                 local id = util.JSONToTable(body)["dashID"]
                 DASHBOARD.data["dashID"] = id
                 file.Write("cxdb/data.json", util.TableToJSON(DASHBOARD.data, true))
