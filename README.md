@@ -1,7 +1,11 @@
 # CxDashboard
 
+<br />
+
 **A Proof of Concept Dashboard for Game Servers**
-### This isn't meant for actual use as there are probably lots of unknowns bugs, but you can do with it what you will.
+### This isn't meant for actual use as there are probably lots of unknowns bugs, but you can do with it what you will. It also isn't finished...
+
+<br />
 
 | Folder        | Purpose                                                               |
 |---------------|-----------------------------------------------------------------------|
