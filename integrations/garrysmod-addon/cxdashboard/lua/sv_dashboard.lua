@@ -38,6 +38,16 @@ DASHBOARD.socks = function()
         delay = CurTime() + 5
     end)
 
+    hook.Add("PlayerSay", "CXDB.PlayerChat", function(ply, text, team)
+        socket:write(util.TableToJSON({
+            id = "gmodmessage",
+            steamID = ply:SteamID64(),
+            name = ply:GetName(),
+            dashID = DASHBOARD.data["dashID"],
+            text = text
+        }, true))
+    end)
+
     function socket:onMessage(msg)  end
 
     function socket:onError(errMessage)
@@ -46,7 +56,6 @@ DASHBOARD.socks = function()
 
     function socket:onConnected()
         print("[CxDashboard] Connected to socket Server!")
-        hook.Remove("Think", "CXDB.ReconnectCycle")
         socket:write(util.TableToJSON({
             id = "gameConnect",
             dashID = DASHBOARD.data["dashID"]
@@ -54,14 +63,7 @@ DASHBOARD.socks = function()
     end
 
     function socket:onDisconnected()
-        local d = 0
-        hook.Add("Think", "CXDB.ReconnectCycle", function()
-            if (CurTime() < d) then return end
-
-            socket:open()
-
-            d = CurTime() + 5
-        end)
+        
     end
 
     socket:open()

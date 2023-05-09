@@ -21,38 +21,74 @@ const dashIDToServer = (dashID: string) => {
     return null;
 }
 
-wss.on("connection", (ws: WebSocket) => {
-    ws.send(JSON.stringify({"id": "initialConnect"}));
+const removeUser = (ws: WebSocket) => {
+    for (const s of servers) {
+        for (const c of s.clients) {
+            if (c === ws) {
+                const index = s.clients.indexOf(c);
+                s.clients.splice(index);
+                return;
+            }
+        }
+    }
+}
+
+const userExists = (ws: WebSocket): boolean => {
+    for (const s of servers) {
+        for (const c of s.clients) {
+            if (c === ws) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+wss.on("connection", async (ws: WebSocket) => {
+    if (!userExists(ws)) {
+        ws.send(JSON.stringify({"id": "initialConnect"}));
+    }
     // Message handlers
-    ws.on("message", (data) => {
+    ws.on("message", async (data) => {
         try {
             const dParse = JSON.parse(data.toString());
+            let server = dashIDToServer(dParse.dashID);
             console.log(dParse);
             switch (dParse.id) {
                 case "clientConnect":
-                    dashIDToServer(dParse.dashID).clients.push(ws);
+                    if (userExists(ws)) break;
+                    server.clients.push(ws);
                     ws.send(JSON.stringify({
                         "id": "connectionResponse",
-                        "online": dashIDToServer(dParse.dashID).gameServer !== undefined
+                        "online": server.gameServer !== undefined
                     }));
                     break;
                 case "gameConnect":
-                    dashIDToServer(dParse.dashID).gameServer = ws;
-                    for (const sock of dashIDToServer(dParse.dashID).clients) {
-                        sock.send(JSON.stringify({
-                            "id": "updateServerStatus",
-                            "online": dashIDToServer(dParse.dashID).gameServer !== undefined
-                        }));
-                    }
+                    await fetchNewServers();
+                    server = dashIDToServer(dParse.dashID);
+                    server.gameServer = ws;
+                    server.broadcast({
+                        "id": "updateServerStatus",
+                        "online": server.gameServer !== undefined
+                    })
                     break;
-                case "updateServer":
-                    dashIDToServer(dParse.dashID).updateInfo(dParse);
+                default: // Just broadcast any specific messages
+                    server.broadcast(dParse);
                     break;
             }
         } catch (e) {
             console.log(e);
         }
-    })
+    });
+
+    ws.on("close", () => {
+        try {
+            removeUser(ws);
+        } catch (e) {
+            console.log(e);
+        }
+    });
 });
 
 const fetchNewServers = async () => {

@@ -2,12 +2,13 @@
 
 import { NextPage } from "next";
 import style from "./server.module.scss";
-import { BaseSyntheticEvent, useEffect, useState } from "react";
+import { BaseSyntheticEvent, Component, ReactNode, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { getCookie } from "@/utils/cookie";
 import { useRouter } from "next/navigation";
 import { CxSocket } from "@/socket/cxsocket";
 import Image from "next/image";
+import { transGameToText } from "@/utils/information";
 
 export const SetServerName = (props: {dashID: string}) => {
     const [serverName, setServerName] = useState<string>("");
@@ -27,9 +28,7 @@ export const SetServerName = (props: {dashID: string}) => {
             }
         });
 
-        if (req.status === 200) {
-            router.refresh();
-        }
+        window.location.reload();
     }
 
     return (
@@ -48,135 +47,190 @@ export const SetServerName = (props: {dashID: string}) => {
     );
 }
 
-export const GarrysMod = (props: {socket: CxSocket}) => {
-    interface ServerData {
-        gamemode: string,
-        avgPing: number,
-        id: string,
-        plyCount: number,
-        dashID: string,
-        staffCount: 0,
-        map: string
-    }
-
-    const [serverInfo, setServerInfo] = useState<ServerData>({
-        "avgPing": 0,
-        "gamemode": "Loading...",
-        "map": "Loading...",
-        "plyCount": 0,
-        "staffCount": 0,
-        "dashID": "",
-        "id": ""
-    });
-
-    props.socket.events.push(
-        {
-            "id": "updateServer",
-            "do": (data: any) => {
-                console.log(data);
-                setServerInfo(data);
-            }
-        }
-    );
-
-    return (
-        <>
-            <section className={style.panel}>
-                <h1>General Information</h1>
-                <section className={style.overview}>
-                    <div className={style.card}>
-                        <div className={style.img}>
-                            <Image src="/dashboard/ping.svg" alt="Dashboard Image" fill></Image>
-                        </div>
-                        <span>Average Ping: {Math.round(serverInfo?.avgPing)}ms</span>
-                    </div>
-                    <div className={style.card}>
-                        <div className={style.img}>
-                            <Image src="/dashboard/map.svg" alt="Dashboard Image" fill></Image>
-                        </div>
-                        <span>Map: {serverInfo?.map}</span>
-                    </div>
-                    <div className={style.card}>
-                        <div className={style.img}>
-                            <Image src="/dashboard/players.svg" alt="Dashboard Image" fill></Image>
-                        </div>
-                        <span>Player Count: {serverInfo?.plyCount}</span>
-                    </div>
-                    <div className={style.card}>
-                        <div className={style.img}>
-                            <Image src="/dashboard/staff.svg" alt="Dashboard Image" fill></Image>
-                        </div>
-                        <span>Staff Count: {serverInfo?.staffCount}</span>
-                    </div>
-                    <div className={style.card}>
-                        <div className={style.img}>
-                            <Image src="/dashboard/game.svg" alt="Dashboard Image" fill></Image>
-                        </div>
-                        <span>Gamemode: {serverInfo?.gamemode}</span>
-                    </div>
-                </section>
-            </section>
-        </>
-    );
+// Garry's Mod
+interface ServerData {
+    gamemode: string,
+    avgPing: number,
+    id: string,
+    plyCount: number,
+    dashID: string,
+    staffCount: 0,
+    map: string
 }
 
-export const SocketComponent = (props: {dashID: string, gameType: string}) => {
-    const [online, setOnline] = useState<boolean>(false);
-
-    const socket: CxSocket = new CxSocket(props.dashID);
-
-    const views: any = {
-        "gmod": <GarrysMod socket={socket}></GarrysMod>
-    }
-    
-    socket.events.push(
-        {
-            "id": "initialConnect",
-            "do": (data: any) => {
-                socket.send({
-                    "id": "clientConnect",
-                    "dashID": props.dashID
-                });
-            }
-        },
-        {
-            "id": "connectionResponse",
-            "do": (data: {id: string, online: boolean}) => {
-                setOnline(data.online)
-            }
-        },
-        {
-            "id": "updateServerStatus",
-            "do": (data: {id: string, online: boolean}) => {
-                setOnline(data.online)
-            }
+interface Message {
+    steamID: string,
+    text: string,
+    name: string
+}
+export class GarrysMod extends Component<any, any> {
+    constructor(props: {socket: CxSocket, serverData: ServerData}) {
+        super(props);
+        this.state = {
+            serverInfo: {
+                "avgPing": 0,
+                "gamemode": "Loading...",
+                "map": "Loading...",
+                "plyCount": 0,
+                "staffCount": 0,
+                "dashID": "",
+                "id": ""
+            },
+            serverData: props.serverData,
+            messages: []
         }
-    )
-    socket.connect();
-
-    if (!online) {
-        return (
-            <section style={{"display": "flex", "alignItems": "center", "justifyContent": "center", "width": "100%"}}>
-                <h1 style={{"margin": "0", "fontSize": "4rem", "textAlign": "center"}}>Server currently offline!</h1>
-            </section>
-        )
+        props.socket.events.push(
+            {
+                "id": "updateServer",
+                "do": (data: any) => {
+                    this.setState({serverInfo: data});
+                }
+            }
+        );
+        props.socket.events.push(
+            {
+                "id": "gmodmessage",
+                "do": (data: any) => {
+                    this.setState((prevState: any) => ({
+                        messages: [...prevState.messages, data]
+                    }));
+                }
+            }
+        );
     }
 
-    return (
-        <>
-            {views[props.gameType]}
-        </>
-    );
+    render(): ReactNode {
+        return (
+            <>
+                <nav>
+                    <section style={{"flex": "0", "minWidth": "20%"}}>
+                        <h2>{this.state.serverData.serverName}</h2>
+                        <h2>{transGameToText(this.state.serverData.game)}</h2>
+                    </section>
+                    <section className={style.overview}>
+                        <div className={style.card}>
+                            <div className={style.img}>
+                                <Image src="/dashboard/ping.svg" alt="Dashboard Image" fill></Image>
+                            </div>
+                            <span>Average Ping: {Math.round(this.state.serverInfo.avgPing)}ms</span>
+                        </div>
+                        <div className={style.card}>
+                            <div className={style.img}>
+                                <Image src="/dashboard/map.svg" alt="Dashboard Image" fill></Image>
+                            </div>
+                            <span>Map: {this.state.serverInfo.map}</span>
+                        </div>
+                        <div className={style.card}>
+                            <div className={style.img}>
+                                <Image src="/dashboard/players.svg" alt="Dashboard Image" fill></Image>
+                            </div>
+                            <span>Player Count: {this.state.serverInfo.plyCount}</span>
+                        </div>
+                        <div className={style.card}>
+                            <div className={style.img}>
+                                <Image src="/dashboard/staff.svg" alt="Dashboard Image" fill></Image>
+                            </div>
+                            <span>Staff Count: {this.state.serverInfo.staffCount}</span>
+                        </div>
+                        <div className={style.card}>
+                            <div className={style.img}>
+                                <Image src="/dashboard/game.svg" alt="Dashboard Image" fill></Image>
+                            </div>
+                            <span>Gamemode: {this.state.serverInfo.gamemode}</span>
+                        </div>
+                    </section>
+                </nav>
+                <section className={style.panel}>
+                    <h1>Chat</h1>
+                    <section className={style.chat}>
+                        {this.state.messages.map((message: Message, index: number) => {
+                            return (
+                                <div key={index} className={style.message}>
+                                    <h2>{message.name} <span>({message.steamID})</span></h2>
+                                    <p>{message.text}</p>
+                                </div>
+                            )
+                        })}
+                    </section>
+
+                    <h1>Commands</h1>
+                    <section>
+                        <button>Run custom command</button>
+                    </section>
+                </section>
+            </>
+        );
+    }
+}
+
+export class SocketComponent extends Component<any, any> {
+    socket = new CxSocket("");
+
+    constructor(props: {dashID: string, gameType: string, serverInfo: ServerData}) {
+        super(props);
+        this.socket.dashID = props.dashID;
+        this.state = {
+            online: false,
+            gameType: props.gameType,
+            serverInfo: props.serverInfo,
+            view: <></>
+        }
+    }
+
+    componentDidMount(): void {
+        this.socket.events.push(
+            {
+                "id": "initialConnect",
+                "do": (data: any) => {
+                    this.socket.send({
+                        "id": "clientConnect",
+                        "dashID": this.socket.dashID
+                    });
+                }
+            },
+            {
+                "id": "connectionResponse",
+                "do": (data: {id: string, online: boolean}) => {
+                    console.log(data);
+                    this.setState({online: data.online});
+                }
+            },
+            {
+                "id": "updateServerStatus",
+                "do": (data: {id: string, online: boolean}) => {
+                    console.log(data);
+                    this.setState({online: data.online});
+                }
+            }
+        )
+        this.socket.connect();
+        switch (this.state.gameType) {
+            case "gmod":
+                this.setState({view: <GarrysMod serverData={this.state.serverInfo} socket={this.socket}></GarrysMod>});
+                break;
+        }
+    }
+
+    render(): ReactNode {
+        if (!this.state.online) {
+            return (
+                <section style={{"display": "flex", "alignItems": "center", "justifyContent": "center", "width": "100%"}}>
+                    <h1 style={{"margin": "0", "fontSize": "4rem", "textAlign": "center"}}>Server currently offline!</h1>
+                </section>
+            )
+        }
+
+        return (
+            <>
+                {this.state.view}
+            </>
+        );
+    }
 }
 
 const ServerPageClient: NextPage<{children: any}> = ({children}) => {
     return (
         <>
-            <style jsx global>{`
-                body {
-                    overflow: hidden;
-                }
-            `}</style>
             {children}
         </>
     );

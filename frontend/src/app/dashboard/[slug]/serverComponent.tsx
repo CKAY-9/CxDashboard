@@ -41,11 +41,7 @@ const ServerPageServer = async (props: ServerPageProps) => {
                 <SetServerName dashID={serverData.data.dashID}></SetServerName>
             }
             <main className={style.dashboard}>
-                <nav>
-                    <h2>{serverData.data.serverName}</h2>
-                    <h2>{transGameToText(serverData.data.game)}</h2>
-                </nav>
-                <SocketComponent dashID={serverData.data.dashID} gameType={serverData.data.game}></SocketComponent>
+                <SocketComponent serverInfo={serverData.data} dashID={serverData.data.dashID} gameType={serverData.data.game}></SocketComponent>
             </main>
         </>
     );

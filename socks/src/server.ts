@@ -5,7 +5,7 @@ export class Server {
     gameServer: WebSocket | undefined = undefined;
     dashID: string = "";
 
-    updateInfo = (info: any) => {
+    broadcast = (info: any) => {
         for (const sock of this.clients) {
             sock.send(JSON.stringify(info));
         }

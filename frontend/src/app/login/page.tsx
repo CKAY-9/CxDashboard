@@ -3,7 +3,6 @@ import style from "./login.module.scss";
 import Header from "@/components/header/header";
 import ClientLogin from "./clientLogin";
 import { getUserData } from "@/api/user";
-import { redirect } from "next/navigation";
 
 const LoginPage = async () => {
     const data = await getUserData();

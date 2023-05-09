@@ -3,7 +3,8 @@ const nextConfig = {
     "reactStrictMode": false,
     "experimental": {
         "appDir": true,
-        "typedRoutes": false
+        "typedRoutes": false,
+        "serverActions": true
     },
     "images": {
         "remotePatterns": [
