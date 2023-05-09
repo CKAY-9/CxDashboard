@@ -8,6 +8,7 @@ integrationRouter.get("/dashID", async (req, res) => {
     const rawDashID = enc.Utf8.parse(req.query.game + (new Date().getTime()).toString() + (Math.random() * 99999999).toString());
     const dashID = enc.Base64.stringify(rawDashID);
 
+    /*
     await client.connect();
     await db.collection("servers").insertOne({
         "game": req.query.game,
@@ -17,6 +18,7 @@ integrationRouter.get("/dashID", async (req, res) => {
         "active": true
     });
     await client.close();
+    */
 
     return res.status(200).json({"dashID": dashID});
 });

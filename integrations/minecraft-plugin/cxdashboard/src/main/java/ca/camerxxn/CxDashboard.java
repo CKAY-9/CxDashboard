@@ -1,12 +1,7 @@
 package ca.camerxxn;
 
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.java_websocket.client.WebSocketClient;
 
@@ -18,8 +13,6 @@ public class CxDashboard extends JavaPlugin {
         Config.initializeData();
 
         if (!Config.data.getString("cxdashboard.config.apiURL").equalsIgnoreCase("API_URL")) {
-
-            
 
             String wsURI = Config.data.getString("cxdashboard.config.wsURL");
             if (wsURI == null) {

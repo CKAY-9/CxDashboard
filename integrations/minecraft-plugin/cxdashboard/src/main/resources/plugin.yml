@@ -1,0 +1,6 @@
+name: CxDashboard
+version: '${project.version}'
+main: ca.camerxxn.CxDashboard
+api-version: 1.19
+authors: [ Camerxn ]
+description: Manage your Minecraft server online!
