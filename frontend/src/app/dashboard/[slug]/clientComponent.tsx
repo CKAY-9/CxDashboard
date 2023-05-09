@@ -7,8 +7,6 @@ import axios from "axios";
 import { getCookie } from "@/utils/cookie";
 import { useRouter } from "next/navigation";
 import { CxSocket } from "@/socket/cxsocket";
-import Image from "next/image";
-import { transGameToText } from "@/utils/information";
 import { GarrysMod } from "./garrysmod";
 import { Minecraft } from "./minecraft";
 
@@ -30,7 +28,7 @@ export const SetServerName = (props: {dashID: string}) => {
             }
         });
 
-        window.location.reload();
+        router.refresh();
     }
 
     return (
