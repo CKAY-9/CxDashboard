@@ -33,10 +33,30 @@
 }
 
 .feature {
-    width: 50%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    place-content: center;
+    gap: 3rem;
+    position: relative;
 
-    h1 {
-        margin: 2rem 0;
-        font-size: 3rem;
+    .info {
+        width: 100%;
+        
+        h1 {
+            margin: 2rem 0;
+            font-size: 3rem;
+        }
+    }
+
+    .showcase {
+        position: relative;
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: var(--shdw3);
+        }
     }
 }

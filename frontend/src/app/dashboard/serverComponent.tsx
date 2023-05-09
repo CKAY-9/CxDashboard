@@ -28,28 +28,35 @@ const DashboardPageServer = async () => {
                     <h2>Hello, <span className={style.name}>{data.name}</span></h2>
                 </section>
                 {data.linkedServers.length >= 1 ?
-                    <div className={style.servers}>
-                        {data.linkedServers.map(async (server: string, index: number) => {
-                            const req: AxiosResponse<ServerInfo> = await axios({
-                                "method": "GET",
-                                "url": process.env.NEXT_PUBLIC_DASHBOARD_API + "/integration/info",
-                                "headers": {
-                                    "authorization": `${data.token}`
-                                },
-                                "params": {
-                                    "dashID": server
-                                }
-                            });
+                    <>
+                        <Link href="/link" style={{"textAlign": "center"}}><h2>Link another server</h2></Link>
+                        <div className="seperator"></div>
+                        <h1 style={{"textAlign": "center"}}>Servers</h1>
+                        <div className={style.servers}>
+                            {data.linkedServers.map(async (server: string, index: number) => {
+                                const req: AxiosResponse<ServerInfo> = await axios({
+                                    "method": "GET",
+                                    "url": process.env.NEXT_PUBLIC_DASHBOARD_API + "/integration/info",
+                                    "headers": {
+                                        "authorization": `${data.token}`
+                                    },
+                                    "params": {
+                                        "dashID": server
+                                    }
+                                });
 
-                            return (
-                                <Link key={index} href={`/dashboard/${index + 1}`} className={style.serverPreview}>
-                                    <h1>{req.data.serverName.length <= 0 ? <>Server name not set</> : <>{req.data.serverName}</> }</h1>
-                                    <h2>{transGameToText(req.data.game)}</h2>
-                                    <h3>{req.data.active ? <>Online</> : <>Offline</>}</h3>
-                                </Link>
-                            );
-                        })}
-                    </div>
+                                if (req.data === null) return;
+
+                                return (
+                                    <Link key={index} href={`/dashboard/${index + 1}`} className={style.serverPreview}>
+                                        <h1>{req.data.serverName.length <= 0 ? <>Server name not set</> : <>{req.data.serverName}</> }</h1>
+                                        <h2>{transGameToText(req.data.game)}</h2>
+                                        <h3>{req.data.active ? <>Online</> : <>Offline</>}</h3>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </>
                 :
                     <>
                         <h1 style={{"textAlign": "center"}}>You have no linked servers!</h1>

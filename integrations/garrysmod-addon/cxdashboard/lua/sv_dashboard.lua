@@ -14,6 +14,7 @@ DASHBOARD.socks = function()
     local socket = GWSockets.createWebSocket("ws://localhost:3002")
     local delay = 0
 
+    -- Events
     hook.Add("Think", "CXDB.ThinkCycle", function()
         if (CurTime() < delay) then return end
         local staffCount = 0
@@ -38,6 +39,13 @@ DASHBOARD.socks = function()
         delay = CurTime() + 5
     end)
 
+    hook.Add("ShutDown", "CXDB.Shutdown", function()
+        socket:write(util.TableToJSON({
+            id = "gameDisconnect",
+            dashID = DASHBOARD.data["dashID"]
+        }, true))
+    end)
+
     hook.Add("PlayerSay", "CXDB.PlayerChat", function(ply, text, team)
         socket:write(util.TableToJSON({
             id = "gmodmessage",
@@ -48,7 +56,10 @@ DASHBOARD.socks = function()
         }, true))
     end)
 
-    function socket:onMessage(msg)  end
+    -- Socket logic
+    function socket:onMessage(msg)
+        
+    end
 
     function socket:onError(errMessage)
         print("[CxDashboard]" .. errMessage)
@@ -63,7 +74,7 @@ DASHBOARD.socks = function()
     end
 
     function socket:onDisconnected()
-        
+
     end
 
     socket:open()

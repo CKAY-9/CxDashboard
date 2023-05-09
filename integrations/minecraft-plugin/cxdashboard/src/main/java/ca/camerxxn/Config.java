@@ -25,7 +25,7 @@ public class Config {
             if (!data.isSet("cxdashboard.config.apiURL")) {
                 data.set("cxdashboard.config.apiURL", "API_URL");
                 data.set("cxdashboard.config.wsURL", "WEBSOCKET_URL");
-                data.set("cxdashboard.dashID", "DONT_EDIT_THIS");
+                data.set("cxdashboard.dashID", "");
                 Utils.getPlugin().getLogger().info("Created default config. Edit the config.yml file and restart your server!");
                 data.save(dataFile);
 

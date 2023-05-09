@@ -27,7 +27,7 @@ const GMod = (props: GameProps) => {
     )
 }
 
-const Minecraft = () => {
+const Minecraft = (props: GameProps) => {
     return (
         <>
             <title>Link - Minecraft</title>
@@ -37,7 +37,7 @@ const Minecraft = () => {
                 <li>Restart your server</li>
                 <li>Paste the unique server ID generated in the server console</li>
             </ul>
-            <input type="text" name="serverID" id="serverID" placeholder="Server ID" />
+            <input onChange={(e: BaseSyntheticEvent) => props.changeDashID(e.target.value)}  type="text" name="serverID" id="serverID" placeholder="Server ID" />
             <input type="submit" value="Connect Minecraft Server" style={{"width": "fit-content"}} />
         </>
     )
@@ -51,7 +51,7 @@ const ClientLink: NextPage<{children: any}> = ({children}) => {
 
     const views: any = {
         "gmod": <GMod changeDashID={setDashID}></GMod>,
-        "mc": <Minecraft></Minecraft>
+        "mc": <Minecraft changeDashID={setDashID}></Minecraft>
     }
 
     const changeView = (e: BaseSyntheticEvent) => {
