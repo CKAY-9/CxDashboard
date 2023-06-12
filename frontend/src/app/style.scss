@@ -37,9 +37,12 @@
     border-radius: 5px;
 }
 
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
 body {
     margin: 0;
-    font-family: 'Open Sans', sans-serif;
     background-color: rgb(var(--bg));
     color: rgb(var(--text));
     font-size: 16px;

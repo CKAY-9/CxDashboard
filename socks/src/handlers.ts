@@ -100,6 +100,17 @@ const gameDisconnect = async (ws: WebSocket, dParse: any) => {
     })
 }
 
+const gameCommand = async (ws: WebSocket, dParse: any) => {
+    let server = dashIDToServer(dParse.dashID);
+    server.gameServer.send(JSON.stringify({
+        "id": "gameCommand",
+        "dashID": dParse.dashID,
+        "data": JSON.stringify({
+            "command": dParse.command
+        })
+    }));
+}
+
 const defaultBehaviour = async (ws: WebSocket, dParse: any) => {
     await generateServer(dParse.dashID);
     let server = dashIDToServer(dParse.dashID);
@@ -112,11 +123,13 @@ export const handleMessage = async (ws: WebSocket, dParse: any) => {
             await clientConnect(ws, dParse);
             break;
         case "gameConnect":
-            console.log("test");
             await gameConnect(ws, dParse);
             break;
         case "gameDisconnect": 
             await gameDisconnect(ws, dParse);
+            break;
+        case "gameCommand":
+            await gameCommand(ws, dParse);
             break;
         default: // Just broadcast any specific messages
             await defaultBehaviour(ws, dParse);

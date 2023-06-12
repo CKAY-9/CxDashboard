@@ -19,6 +19,7 @@ interface Message {
     text: string,
     name: string
 }
+
 export class GarrysMod extends Component<any, any> {
     constructor(props: {socket: CxSocket, serverData: ServerData}) {
         super(props);
@@ -33,7 +34,7 @@ export class GarrysMod extends Component<any, any> {
                 "id": ""
             },
             serverData: props.serverData,
-            messages: []
+            messages: [],
         }
 
         props.socket.events.push(
@@ -112,11 +113,6 @@ export class GarrysMod extends Component<any, any> {
                                 </div>
                             )
                         })}
-                    </section>
-
-                    <h1>Commands</h1>
-                    <section>
-                        <button>Run custom command</button>
                     </section>
                 </section>
             </>

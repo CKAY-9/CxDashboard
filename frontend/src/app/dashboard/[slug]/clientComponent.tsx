@@ -28,7 +28,9 @@ export const SetServerName = (props: {dashID: string}) => {
             }
         });
 
+  
         router.refresh();
+        window.location.reload();
     }
 
     return (
@@ -57,8 +59,14 @@ export class SocketComponent extends Component<any, any> {
             online: false,
             gameType: props.gameType,
             serverInfo: props.serverInfo,
-            view: <></>
+            view: <></>,
+            customCommand: false, 
+            command: ""
         }
+    }
+
+    showCustomCommand(showing: boolean = true): void {
+        this.setState({"customCommand": showing}); 
     }
 
     componentDidMount(): void {
@@ -92,6 +100,7 @@ export class SocketComponent extends Component<any, any> {
     }
 
     render(): ReactNode {
+  
         if (!this.state.online) {
             return (
                 <section style={{"display": "flex", "alignItems": "center", "justifyContent": "center", "width": "100%"}}>
@@ -102,6 +111,24 @@ export class SocketComponent extends Component<any, any> {
 
         return (
             <>
+                {this.state.customCommand && <>
+                    <div className={style.popup} style={{"position": "fixed", "top": "0"}}>
+                        <div className={style.content}>
+                            <h2>Execute Command</h2>
+                            <input type="text" onChange={(e: BaseSyntheticEvent) => this.setState({command: e.target.value})} name="command"></input>
+                            <button onClick={() => {
+                                this.socket.send({
+                                    "id": "gameCommand",
+                                    "dashID": this.socket.dashID,
+                                    "command": this.state.command 
+                                });
+
+                                this.showCustomCommand(false);
+                            }}>Execute</button>
+                        </div> 
+                    </div> 
+                </>}
+                <button className={style.commandButton} onClick={() => this.showCustomCommand(true)}>Execute Command</button>
                 {this.state.view}
             </>
         );

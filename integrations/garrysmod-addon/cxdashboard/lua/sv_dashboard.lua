@@ -58,7 +58,10 @@ DASHBOARD.socks = function()
 
     -- Socket logic
     function socket:onMessage(msg)
-        
+        local parsed = util.JSONToTable(msg)
+        if (parsed.id == "gameCommand") then
+            
+        end
     end
 
     function socket:onError(errMessage)

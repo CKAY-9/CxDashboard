@@ -18,6 +18,7 @@ interface Message {
     content: string,
     uuid: string
 }
+
 export class Minecraft extends Component<any, any> {
     constructor(props: {socket: CxSocket, serverData: ServerData}) {
         super(props);
@@ -109,11 +110,6 @@ export class Minecraft extends Component<any, any> {
                                 </div>
                             )
                         })}
-                    </section>
-
-                    <h1>Commands</h1>
-                    <section>
-                        <button>Run custom command</button>
                     </section>
                 </section>
             </>

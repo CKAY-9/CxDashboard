@@ -1,3 +1,20 @@
+.commandButton {
+    position: fixed;
+    bottom: 3rem;
+    left: 3rem;
+    background-color: rgb(var(--accent));
+    border: none;
+    color: rgb(var(--text));
+    padding: 1rem;
+    font-weight: 900;
+    border-radius: 10px;
+    box-shadow: var(--s800);
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 .dashboard {
     display: flex;
     flex-direction: column;
