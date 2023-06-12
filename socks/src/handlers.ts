@@ -111,6 +111,15 @@ const gameCommand = async (ws: WebSocket, dParse: any) => {
     }));
 }
 
+const gameLog = async (ws: WebSocket, dParse: any) => {
+    let server = dashIDToServer(dParse.dashID);
+    
+    server.broadcast({
+        "id": "sendGameLog",
+        "log": dParse.log
+    })
+}
+
 const defaultBehaviour = async (ws: WebSocket, dParse: any) => {
     await generateServer(dParse.dashID);
     let server = dashIDToServer(dParse.dashID);
@@ -130,6 +139,9 @@ export const handleMessage = async (ws: WebSocket, dParse: any) => {
             break;
         case "gameCommand":
             await gameCommand(ws, dParse);
+            break;
+        case "gameLog":
+            await gameLog(ws, dParse);
             break;
         default: // Just broadcast any specific messages
             await defaultBehaviour(ws, dParse);

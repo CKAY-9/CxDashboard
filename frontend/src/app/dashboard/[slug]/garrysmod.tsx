@@ -35,6 +35,7 @@ export class GarrysMod extends Component<any, any> {
             },
             serverData: props.serverData,
             messages: [],
+            logs: []
         }
 
         props.socket.events.push(
@@ -56,6 +57,14 @@ export class GarrysMod extends Component<any, any> {
                 "id": "updateServer",
                 "do": (data: ServerData) => {
                     this.setState({serverInfo: data});
+                }
+            },
+            {
+                "id": "sendGameLog",
+                "do": (data: {id: string, log: string}) => {
+                    this.setState((prevState: any) => ({
+                        logs: [...prevState.logs, data.log]  
+                    }));
                 }
             }
         );
@@ -104,7 +113,7 @@ export class GarrysMod extends Component<any, any> {
                 </nav>
                 <section className={style.panel}>
                     <h1>Chat</h1>
-                    <section className={style.chat}>
+                    <section className={style.board}>
                         {this.state.messages.map((message: Message, index: number) => {
                             return (
                                 <div key={index} className={style.message}>
@@ -112,6 +121,16 @@ export class GarrysMod extends Component<any, any> {
                                     <p>{message.text}</p>
                                 </div>
                             )
+                        })}
+                    </section>
+                    <h1>Logs</h1>
+                    <section className={style.board}>
+                        {this.state.logs.map((log: string, index: number) => {
+                            return (
+                                <div key={index}>
+                                    {log}
+                                </div>
+                            );
                         })}
                     </section>
                 </section>

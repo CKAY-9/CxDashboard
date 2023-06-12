@@ -14,3 +14,9 @@
 | /socks        | Websocket server for CxDashboard (ws)                                 |
 | /assets       | Primarily used for image files                                        |
 | /integrations | Game integrations (websockets and whatever the game uses for modding) |
+
+# Plans
+
+1. Docker support
+2. Better styling
+3. More login options

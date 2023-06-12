@@ -32,7 +32,8 @@ export class Minecraft extends Component<any, any> {
                 staffCount: 0,
             },
             serverData: props.serverData,
-            messages: []
+            messages: [],
+            logs: []
         }
         props.socket.events.push(
             {
@@ -44,7 +45,6 @@ export class Minecraft extends Component<any, any> {
             {
                 "id": "mcmessage",
                 "do": (data: any) => {
-                    console.log(data);
                     this.setState((prevState: any) => ({
                         messages: [...prevState.messages, data]
                     }));
@@ -54,6 +54,14 @@ export class Minecraft extends Component<any, any> {
                 "id": "updateServer",
                 "do": (data: ServerData) => {
                     this.setState({serverInfo: data});
+                }
+            },
+            {
+                "id": "sendGameLog",
+                "do": (data: {id: string, log: string}) => {
+                    this.setState((prevState: any) => ({
+                        logs: [...prevState.logs, data.log]  
+                    }));
                 }
             }
         );
@@ -94,7 +102,7 @@ export class Minecraft extends Component<any, any> {
                         </div>
                     </section>
                 </nav>
-                <section className={style.panel}>
+                <section className={style.board}>
                     <h1>Chat</h1>
                     <section className={style.chat}>
                         {this.state.messages.map((message: Message, index: number) => {
@@ -109,6 +117,16 @@ export class Minecraft extends Component<any, any> {
                                     <p>{message.content}</p>
                                 </div>
                             )
+                        })}
+                    </section>
+                    <h1>Logs</h1>
+                    <section className={style.board}>
+                        {this.state.logs.map((log: string, index: number) => {
+                            return (
+                                <div key={index}>
+                                    {log}
+                                </div>
+                            );
                         })}
                     </section>
                 </section>
