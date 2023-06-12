@@ -53,10 +53,11 @@ export const SetServerName = (props: {dashID: string}) => {
 export class SocketComponent extends Component<any, any> {
     socket = new CxSocket("");
 
-    constructor(props: {dashID: string, gameType: string, serverInfo: any}) {
+    constructor(props: {dashID: string, id: number, gameType: string, serverInfo: any}) {
         super(props);
         this.socket.dashID = props.dashID;
         this.state = {
+            id: props.id,
             online: false,
             gameType: props.gameType,
             serverInfo: props.serverInfo,
@@ -106,7 +107,7 @@ export class SocketComponent extends Component<any, any> {
             return (
                 <section style={{"display": "flex", "gap": "2rem", "flexDirection": "column", "alignItems": "center", "justifyContent": "center", "width": "100%"}}>
                     <h1 style={{"margin": "0", "fontSize": "4rem", "textAlign": "center"}}>Server currently offline!</h1>
-                    <Link style={{"fontSize": "2rem", "fontWeight": "900"}} href={`${window.location.href}/config`}>Edit your server</Link>
+                    <Link style={{"fontSize": "2rem", "fontWeight": "900"}} href={`dashboard/${this.state.id + 1}/config`}>Edit your server</Link>
                 </section>
             )
         }
@@ -115,9 +116,9 @@ export class SocketComponent extends Component<any, any> {
             <>
                 {this.state.customCommand && <>
                     <div className={style.popup} style={{"position": "fixed", "top": "0"}}>
-                        <div className={style.content}>
+                        <div className={style.command}>
                             <h2>Execute Command</h2>
-                            <input type="text" onChange={(e: BaseSyntheticEvent) => this.setState({command: e.target.value})} name="command"></input>
+                            <input type="text" placeholder="Command to execute" onChange={(e: BaseSyntheticEvent) => this.setState({command: e.target.value})} name="command"></input>
                             <button onClick={() => {
                                 this.socket.send({
                                     "id": "gameCommand",
@@ -127,6 +128,7 @@ export class SocketComponent extends Component<any, any> {
 
                                 this.showCustomCommand(false);
                             }}>Execute</button>
+                            <button onClick={() => this.showCustomCommand(false)}>Cancel</button>
                         </div> 
                     </div> 
                 </>}

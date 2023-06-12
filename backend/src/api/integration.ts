@@ -1,6 +1,7 @@
 import { enc } from "crypto-js";
 import { Router } from "express";
 import client, { db } from "../db/mongo";
+import {validateIntegration} from "./utils";
 export const integrationRouter = Router();
 
 integrationRouter.get("/dashID", async (req, res) => {
@@ -34,20 +35,17 @@ integrationRouter.post("/link", async (req, res) => {
 
         const token = req.headers.authorization;
         const dashID = req.body.dashID;
-        // Check user validity
-        const user = await db.collection("users").findOne({"token": token});
-        if (!user) {
+
+        const validate = await validateIntegration(dashID, token);
+        if (!validate.success) {
             return res.status(401);
         }
-        // Check DashID
-        if (!(await db.collection("servers").findOne({"dashID": dashID}))) {
-            return res.status(404);
-        }
+
         // Update Server and User
         await db.collection("users").updateOne({"token": token}, {$push: {"linkedServers": dashID}}, {"upsert": true});
-        await db.collection("servers").updateOne({"dashID": dashID}, {$push: {"allowedUsers": user.id}}, {"upsert": true});
+        await db.collection("servers").updateOne({"dashID": dashID}, {$push: {"allowedUsers": validate.user.id}}, {"upsert": true});
 
-        return res.status(200).json({"dashID": dashID, "id": user.linkedServers.lenght + 1});
+        return res.status(200).json({"dashID": dashID, "id": validate.user.linkedServers.length + 1});
     } catch (ex) {
         console.log(ex);
         return res.status(500);
@@ -111,11 +109,9 @@ integrationRouter.post("/changeServerName", async (req, res) => {
         const token = req.headers.authorization;
         const dashID = req.body.dashID;
         const serverName = req.body.serverName;
-        // Check user validity
-        if (!(await db.collection("users").findOne({"token": token}))) {
-            return res.status(401);
-        }
-        if (!(await db.collection("servers").findOne({"dashID": dashID}))) {
+        
+        const validate = await validateIntegration(dashID, token);
+        if (!validate.success) {
             return res.status(401);
         }
 
@@ -133,26 +129,68 @@ integrationRouter.post("/update", async (req, res) => {
         if (req.headers.authorization === undefined) {
             return res.status(401);
         }
-        if (req.body.dashID === undefined || req.body.serverName === undefined) {
+        if (req.body.users === undefined || req.body.dashID === undefined || req.body.serverName === undefined) {
             return res.status(400);
         }
         
         const token = req.headers.authorization;
         const dashID = req.body.dashID;
-        const serverName= req.body.serverName;
+        const serverName = req.body.serverName;
+        const users: string[] = req.body.users;
 
-        if (!(await db.collection("users").findOne({"token": token}))) {
+        const validate = await validateIntegration(dashID, token);
+        if (!validate.success) {
             return res.status(401);
         }
-        if (!(await db.collection("servers").findOne({"dashID": dashID}))) {
-            return res.status(401);
+
+        for (const u of users) {
+            if (validate.server.allowedUsers.includes(u)) continue;
+            // Update user information
+            await db.collection("users").updateOne({"id": u}, {$push: {"linkedServers": dashID}}, {upsert: true});
         }
 
-        await db.collection("servers").updateOne({"dashID": dashID}, {$set: {"serverName": serverName}}, {upsert: true});
-      
-            return res.status(200).json({});
+        for (const u of validate.server.allowedUsers) {
+            if (users.includes(u)) continue;
+            // Delete user
+            await db.collection("users").updateOne({"id": u}, {$pull: {"linkedServers": dashID}});
+        }
+
+        await db.collection("servers").updateOne({"dashID": dashID}, {$set: {"serverName": serverName, "allowedUsers": users}}, {upsert: true});
+
+        return res.status(200).json({});
     } catch (ex) {
         console.log(ex);
         res.status(500);
     }
+});
+
+integrationRouter.post("/remove", async (req, res) => {
+    try { 
+        if (req.headers.authorization === undefined) {
+            return res.status(401);
+        }
+        if (req.body.users === undefined || req.body.dashID === undefined || req.body.serverName === undefined) {
+            return res.status(400);
+        }
+        
+        const token = req.headers.authorization;
+        const dashID = req.body.dashID;
+
+        const validate = await validateIntegration(dashID, token);
+        if (!validate.success) {
+            return res.status(401);
+        }
+
+        for (const temp of validate.server.allowedUsers) {
+            await db.collection("servers").updateOne({"id": temp}, {$pull: {"linkedServers": dashID}})
+        }
+
+        await db.collection("servers").deleteOne({"dashID": dashID});
+
+        return res.status(200).json({});
+    } catch (ex) {
+        console.log(ex);
+        res.status(500);
+    }
+
 });

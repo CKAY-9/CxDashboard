@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import style from "./server.module.scss";
 import { SetServerName, SocketComponent } from "./clientComponent";
 import { transGameToText } from "@/utils/information";
+import Link from "next/link";
+import Image from "next/image";
 
 interface ServerPageProps {
     params: any
@@ -36,12 +38,23 @@ const ServerPageServer = async (props: ServerPageProps) => {
 
     return (
         <>
-            <Header userData={userData}></Header>
+            <header>
+                <Link href="/dashboard">Dashboard</Link>
+                <Link href={`/dashboard/${id + 1}/config`}>Config</Link>
+                <section>
+                    <div className="user">
+                        <span>{userData.name}</span>
+                        <div className="icon">
+                            <Image src={userData.avatar} alt="User Icon" fill></Image>
+                        </div>
+                    </div>
+                </section>
+            </header>
             {serverData.data.serverName === "" &&
                 <SetServerName dashID={serverData.data.dashID}></SetServerName>
             }
             <main className={style.dashboard}>
-                <SocketComponent serverInfo={serverData.data} dashID={serverData.data.dashID} gameType={serverData.data.game}></SocketComponent>
+                <SocketComponent id={id} serverInfo={serverData.data} dashID={serverData.data.dashID} gameType={serverData.data.game}></SocketComponent>
             </main>
         </>
     );

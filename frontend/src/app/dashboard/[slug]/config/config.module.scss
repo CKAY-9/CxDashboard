@@ -1,9 +1,63 @@
 .form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
 
     * {
         width: fit-content;
     }
+
+    button {
+        outline: none;
+        border: none;
+    }
+
+    .members {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .existingMembers {
+        padding: 1rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        background-color: rgb(var(--fg));
+        gap: 1rem;
+        border-radius: 10px;
+        overflow: hidden;
+
+        .member {
+            background-color: rgb(var(--accent));
+            border-radius: 10px;
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: var(--shdw1);
+            transition: 0.35s ease all;
+            border-radius: 5px;
+
+            &:hover {
+                box-shadow: var(--shdw2);
+            }
+
+            button {
+                background-color: rgb(var(--danger));
+                color: white;
+                border-radius: 50%;
+                padding: 0.33rem;
+                width: 2rem;
+                height: 2rem;
+                transition: 0.35s ease all;
+
+                &:hover {
+                    border-radius: 10px;
+                }
+            }
+        }
+    } 
 }

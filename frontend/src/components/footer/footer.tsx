@@ -8,6 +8,7 @@ const Footer = () => {
                     <strong>Navigation</strong>
                     <Link href="/">Home</Link>
                     <Link href="/login">Login</Link>
+                    <Link href="https://github.com/Camerxxn/CxDashboard" target="_blank">Github</Link>
                 </section>
                 <section>
                     <strong>Dashboard</strong>

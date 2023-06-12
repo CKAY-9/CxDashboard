@@ -100,8 +100,8 @@ export class Minecraft extends Component<any, any> {
                         {this.state.messages.map((message: Message, index: number) => {
                             return (
                                 <div key={index} className={style.message}>
-                                    <section style={{"margin": "1rem 0 0 0", "display": "flex", "alignItems": "center", "gap": "1.5rem"}}>
-                                        <div style={{"position": "relative", "width": "3rem", "height": "3rem"}}>
+                                    <section style={{"margin": "1rem 0 0 0", "display": "flex", "alignItems": "center", "gap": "0.5rem"}}>
+                                        <div style={{"position": "relative", "width": "1.5rem", "height": "1.5rem"}}>
                                             <Image style={{"borderRadius": "50%"}} src={`https://mc-heads.net/avatar/${message.uuid}`} alt="Minecraft Head" fill></Image>
                                         </div>
                                         <h2>{message.username} <span>({message.uuid})</span></h2>

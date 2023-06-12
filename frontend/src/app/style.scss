@@ -5,6 +5,7 @@
     --fg: 36, 39, 42;
     --accent: 46, 51, 56;
     --scroll: 50, 50, 70;
+    --danger: 225, 70, 70;
 
     --shdw1: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     --shdw2: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
@@ -167,4 +168,10 @@ input {
 
 .container {
     margin: 5rem 15rem;
+}
+
+button, input[type="button"] {
+    &:hover {
+        cursor: pointer;
+    }
 }

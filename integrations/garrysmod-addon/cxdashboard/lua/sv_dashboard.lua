@@ -9,6 +9,18 @@ end
 DASHBOARD.fileData = file.Read("cxdb/data.json", "DATA")
 DASHBOARD.data = util.JSONToTable(DASHBOARD.fileData)
 
+-- https://www.tutorialspoint.com/how-to-split-a-string-in-lua-programming 
+function splitString(inputstr, sep)
+   if sep == nil then
+      sep = "%s"
+   end
+   local t={}
+   for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+      table.insert(t, str)
+   end
+   return t
+end
+
 DASHBOARD.socks = function()
     print("[CxDashboard] There must be playes online for websockets to work!")
     local socket = GWSockets.createWebSocket("ws://localhost:3002")
@@ -60,7 +72,9 @@ DASHBOARD.socks = function()
     function socket:onMessage(msg)
         local parsed = util.JSONToTable(msg)
         if (parsed.id == "gameCommand") then
-            
+            local commandData = util.JSONToTable(parsed.data);
+            local splitCommand = splitString(commandData.command, " ")
+            RunConsoleCommand(splitCommand[1], splitCommand[2])
         end
     end
 
