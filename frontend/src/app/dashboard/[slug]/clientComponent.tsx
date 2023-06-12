@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { CxSocket } from "@/socket/cxsocket";
 import { GarrysMod } from "./garrysmod";
 import { Minecraft } from "./minecraft";
+import Link from "next/link";
 
 export const SetServerName = (props: {dashID: string}) => {
     const [serverName, setServerName] = useState<string>("");
@@ -103,8 +104,9 @@ export class SocketComponent extends Component<any, any> {
   
         if (!this.state.online) {
             return (
-                <section style={{"display": "flex", "alignItems": "center", "justifyContent": "center", "width": "100%"}}>
+                <section style={{"display": "flex", "gap": "2rem", "flexDirection": "column", "alignItems": "center", "justifyContent": "center", "width": "100%"}}>
                     <h1 style={{"margin": "0", "fontSize": "4rem", "textAlign": "center"}}>Server currently offline!</h1>
+                    <Link style={{"fontSize": "2rem", "fontWeight": "900"}} href={`${window.location.href}/config`}>Edit your server</Link>
                 </section>
             )
         }

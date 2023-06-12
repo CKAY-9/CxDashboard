@@ -113,19 +113,46 @@ integrationRouter.post("/changeServerName", async (req, res) => {
         const serverName = req.body.serverName;
         // Check user validity
         if (!(await db.collection("users").findOne({"token": token}))) {
-            await client.close();
             return res.status(401);
         }
         if (!(await db.collection("servers").findOne({"dashID": dashID}))) {
-            await client.close();
             return res.status(401);
         }
 
         await db.collection("servers").updateOne({"dashID": dashID}, {$set: {"serverName": serverName}}, {upsert: true});
 
-        return res.status(200);
+        return res.status(200).json({});
     } catch (ex) {
-        console.log(ex)
+        console.log(ex);
+        res.status(500);
+    }
+});
+
+integrationRouter.post("/update", async (req, res) => {
+    try { 
+        if (req.headers.authorization === undefined) {
+            return res.status(401);
+        }
+        if (req.body.dashID === undefined || req.body.serverName === undefined) {
+            return res.status(400);
+        }
+        
+        const token = req.headers.authorization;
+        const dashID = req.body.dashID;
+        const serverName= req.body.serverName;
+
+        if (!(await db.collection("users").findOne({"token": token}))) {
+            return res.status(401);
+        }
+        if (!(await db.collection("servers").findOne({"dashID": dashID}))) {
+            return res.status(401);
+        }
+
+        await db.collection("servers").updateOne({"dashID": dashID}, {$set: {"serverName": serverName}}, {upsert: true});
+      
+            return res.status(200).json({});
+    } catch (ex) {
+        console.log(ex);
         res.status(500);
     }
 });
