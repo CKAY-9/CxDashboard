@@ -36,6 +36,11 @@ class ReceivingMessage {
     String data = "";
 }
 
+class DisconnectSend {
+    String id = "gameDisconnect";
+    String dashID = Config.data.getString("cxdashboard.dashID");
+}
+
 public class WebSocks extends WebSocketClient {
 
     Gson gson = new Gson();
@@ -44,9 +49,19 @@ public class WebSocks extends WebSocketClient {
         super(uri);
     }
 
+    public static void disconnectFromServer(WebSocketClient ws) {
+        if (!ws.isOpen()) return;
+
+        DisconnectSend disconnect = new DisconnectSend();
+        Gson g = new Gson();
+        ws.send(g.toJson(disconnect));
+
+        ws.close();
+    }
+
     @Override
     public void onClose(int code, String reason, boolean remove) {
-
+    
     }
 
     @Override
@@ -65,7 +80,8 @@ public class WebSocks extends WebSocketClient {
                     Utils.getPlugin().getLogger().warning("Failed to parse game command message!");
                     return;
                 }
-
+                
+                // Dispatch Command is async and required a runTask
                 new BukkitRunnable() {
                     @Override
                     public void run() {

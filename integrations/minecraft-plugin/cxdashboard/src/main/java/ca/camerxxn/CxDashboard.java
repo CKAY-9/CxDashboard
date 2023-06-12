@@ -78,6 +78,6 @@ public class CxDashboard extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        WebSocks.disconnectFromServer(ws);
     }
 }

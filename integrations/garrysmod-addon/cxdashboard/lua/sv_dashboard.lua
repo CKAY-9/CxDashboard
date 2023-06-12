@@ -91,7 +91,10 @@ DASHBOARD.socks = function()
     end
 
     function socket:onDisconnected()
-
+        socket:write(util.TableToJSON({
+            id = "gameDisconnect",
+            dashID = DASHBOARD.data["dashID"]
+        }, true))
     end
 
     socket:open()

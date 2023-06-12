@@ -25,13 +25,13 @@ public class Events implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (dashboard.ws.getConnection().isOpen()) {
-            Message msg = new Message();
-            msg.content = event.getMessage();
-            msg.username = event.getPlayer().getName();
-            msg.uuid = event.getPlayer().getUniqueId().toString();
+        if (!dashboard.ws.getConnection().isOpen()) return;
+        
+        Message msg = new Message();
+        msg.content = event.getMessage();
+        msg.username = event.getPlayer().getName();
+        msg.uuid = event.getPlayer().getUniqueId().toString();
 
-            dashboard.ws.send(gson.toJson(msg));
-        }
+        dashboard.ws.send(gson.toJson(msg));
     }
 }
