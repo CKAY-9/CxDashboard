@@ -90,7 +90,7 @@ integrationRouter.post("/updateServerStatus", async (req, res) => {
         // update status
         await db.collection("servers").updateOne({dashID: dashID}, {$set: {"active": status}}, {upsert: true});
 
-        return res.status(200);
+        return res.status(200).json({});
     } catch (ex) {
         console.log(ex);
         res.status(500);
