@@ -15,7 +15,12 @@ const LoginPage = async () => {
             <main className={style.container}>
                 <section className={style.login}>
                     <h1>Login</h1>
-                    <Link href={`https://github.com/login/oauth/authorize?scope=user:email&client_id=${process.env.NEXT_PUBLIC_GITHUB_OAUTH}`}>Login with Github</Link>
+                    {process.env.NEXT_PUBLIC_GITHUB_OAUTH !== undefined &&
+                        <Link href={`https://github.com/login/oauth/authorize?scope=user:email&client_id=${process.env.NEXT_PUBLIC_GITHUB_OAUTH}`}>Login with Github</Link>
+                    }
+                    {process.env.NEXT_PUBLIC_DISCORD_OAUTH !== undefined &&
+                        <Link href={process.env.NEXT_PUBLIC_DISCORD_OAUTH}>Login with Discord</Link>
+                    }
                 </section>
             </main>
         </>

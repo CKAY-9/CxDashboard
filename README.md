@@ -19,4 +19,3 @@
 
 1. Docker support
 2. Better styling
-3. More login options

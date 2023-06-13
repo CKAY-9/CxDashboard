@@ -3,7 +3,8 @@ export interface User {
     name: string,
     token: string,
     id: string,
-    linkedServers: string[]
+    linkedServers: string[],
+    oauth: "discord" | "github"
 }
 
 export interface ServerInfo {
