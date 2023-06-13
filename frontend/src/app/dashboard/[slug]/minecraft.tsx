@@ -102,9 +102,9 @@ export class Minecraft extends Component<any, any> {
                         </div>
                     </section>
                 </nav>
-                <section className={style.board}>
+                <section className={style.panel}>
                     <h1>Chat</h1>
-                    <section className={style.chat}>
+                    <section className={style.board}>
                         {this.state.messages.map((message: Message, index: number) => {
                             return (
                                 <div key={index} className={style.message}>

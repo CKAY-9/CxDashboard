@@ -61,7 +61,14 @@ public class WebSocks extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remove) {
-    
+        if (isOpen()) return;
+
+        DisconnectSend disconnect = new DisconnectSend();
+        Gson g = new Gson();
+        send(g.toJson(disconnect));
+
+        close();
+              
     }
 
     @Override
