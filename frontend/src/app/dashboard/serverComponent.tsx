@@ -26,7 +26,8 @@ const DashboardPageServer = async () => {
                         <Image src={data.avatar} alt="User Icon" fill></Image>
                     </div>
                     <h2 style={{"margin": "3rem 0 0 0"}}>Hello, <span className={style.name}>{data.name}</span></h2>
-                    <h3 style={{"margin": "1rem 0 3rem 0", "opacity": "0.5"}}>Logged in with {data.oauth === "discord" ? "Discord" : "Github"}</h3>
+                    <h3 style={{"margin": "1rem 0 0 0", "opacity": "0.5"}}>Logged in with {data.oauth === "discord" ? "Discord" : "Github"}</h3>
+                    <h3 style={{"margin": "1rem 0 3rem 0", "opacity": "0.5"}}>ID: {data.id}</h3>
                 </section>
                 {data.linkedServers.length >= 1 ?
                     <>

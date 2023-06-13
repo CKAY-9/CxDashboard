@@ -6,7 +6,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.google.gson.Gson;
@@ -77,5 +79,15 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         _log(event.getPlayer().getName() + " executed a command: " + event.getMessage());
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        _log(event.getPlayer().getName() + " was kicked: " + event.getReason());
+    }
+
+    @EventHandler
+    public void onPlayerGM(PlayerGameModeChangeEvent event) {
+        _log(event.getPlayer().getName() + " changed gamemode: " + event.getNewGameMode());
     }
 }

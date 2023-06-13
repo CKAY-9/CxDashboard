@@ -169,7 +169,7 @@ integrationRouter.post("/remove", async (req, res) => {
         if (req.headers.authorization === undefined) {
             return res.status(401);
         }
-        if (req.body.users === undefined || req.body.dashID === undefined || req.body.serverName === undefined) {
+        if (req.body.dashID === undefined) {
             return res.status(400);
         }
         
@@ -182,6 +182,7 @@ integrationRouter.post("/remove", async (req, res) => {
         }
 
         for (const temp of validate.server.allowedUsers) {
+            console.log(temp);
             await db.collection("servers").updateOne({"id": temp}, {$pull: {"linkedServers": dashID}})
         }
 

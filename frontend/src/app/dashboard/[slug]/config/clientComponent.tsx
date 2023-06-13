@@ -52,6 +52,9 @@ export const ConfigSite = (props: {serverData: ServerInfo, userData: User}) => {
         const req = await axios({
             url: process.env.NEXT_PUBLIC_DASHBOARD_API + "/integration/remove",
             method: "POST",
+            data: {
+                "dashID": props.serverData.dashID    
+            },
             headers: {
                 "authorization": `${props.userData.token}` 
             }
