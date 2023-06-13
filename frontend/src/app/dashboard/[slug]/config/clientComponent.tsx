@@ -115,7 +115,7 @@ export const ConfigSite = (props: {users: UserData[], serverData: ServerInfo, us
                 <section id="allowedUsers" className={style.members}>
                     <h2>Members</h2>
                     <div className={style.existingMembers}>
-                        {users.map(async (user: UserData, index: number) => { 
+                        {users.map((user: UserData, index: number) => { 
                             return (
                                 <section key={index} className={style.member}>
                                     {user.owner !== undefined 
