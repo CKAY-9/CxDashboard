@@ -30,6 +30,33 @@ const ConfigServer = async (props: {params: any}) => {
         }
     });
 
+    const users: {
+        name: string,
+        avatar: string,
+        owner: boolean | undefined,
+        id: string
+    }[] = [];
+
+    let foundOwner: boolean = false;
+
+    for (let i = 0; i < serverData.data.allowedUsers.length; i++) {
+        const id = serverData.data.allowedUsers[i];
+        const req = await axios({
+            url: process.env.NEXT_PUBLIC_DASHBOARD_API + "/user/publicInfo",
+            method: "GET",
+            params: {
+                "userID": id,
+                "dashID": foundOwner ? undefined : serverData.data.dashID
+            }
+        });
+
+        users.push({
+            "avatar": req.data.avatar,
+            "name": req.data.name,
+            "owner": req.data.owner,
+            "id": serverData.data.allowedUsers[i]
+        })
+    }
 
     return (
         <>
@@ -42,7 +69,7 @@ const ConfigServer = async (props: {params: any}) => {
                     <h1 style={{"fontSize": "2rem", "margin": "5px 0"}}>Config</h1>
                 </div>
                 <div className="seperator"></div>
-                <ConfigSite serverData={serverData.data} userData={userData}></ConfigSite>  
+                <ConfigSite serverData={serverData.data} users={users} userData={userData}></ConfigSite>  
             </div>
         </>
     );     

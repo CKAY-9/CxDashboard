@@ -14,7 +14,8 @@ integrationRouter.get("/dashID", async (req, res) => {
             "dashID": dashID,
             "serverName": "",
             "allowedUsers": [],
-            "active": false
+            "active": false,
+            "creator": ""
         });
 
         return res.status(200).json({"dashID": dashID});
@@ -43,7 +44,7 @@ integrationRouter.post("/link", async (req, res) => {
 
         // Update Server and User
         await db.collection("users").updateOne({"token": token}, {$push: {"linkedServers": dashID}}, {"upsert": true});
-        await db.collection("servers").updateOne({"dashID": dashID}, {$push: {"allowedUsers": validate.user.id}}, {"upsert": true});
+        await db.collection("servers").updateOne({"dashID": dashID}, {$push: {"allowedUsers": validate.user.id}, $set: {"creator": validate.user.id}}, {"upsert": true});
 
         return res.status(200).json({"dashID": dashID, "id": validate.user.linkedServers.length + 1});
     } catch (ex) {
@@ -146,6 +147,7 @@ integrationRouter.post("/update", async (req, res) => {
         for (const u of users) {
             if (validate.server.allowedUsers.includes(u)) continue;
             // Update user information
+            if (!(await db.collection("users").findOne({"id": u}))) continue;
             await db.collection("users").updateOne({"id": u}, {$push: {"linkedServers": dashID}}, {upsert: true});
         }
 

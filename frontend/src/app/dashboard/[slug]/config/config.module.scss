@@ -36,7 +36,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 1rem;
             box-shadow: var(--shdw1);
             transition: 0.35s ease all;
             border-radius: 5px;
@@ -53,11 +53,22 @@
                 width: 2rem;
                 height: 2rem;
                 transition: 0.35s ease all;
-
+                margin-left: 3rem;
+                    
                 &:hover {
                     border-radius: 10px;
                 }
             }
+
+            .avatar {
+                position: relative;
+
+                img {
+                    width: 2rem;
+                    height: 2rem;
+                    border-radius: 50%;
+                }
+            }
         }
     } 
-}
+}   
