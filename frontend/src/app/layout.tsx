@@ -12,7 +12,12 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body>{children}</body>
+			<body>
+                <div id="notifications" className="notifications">
+                    
+                </div>
+                {children}
+            </body>
 		</html>
 	)
 }

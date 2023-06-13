@@ -5,6 +5,7 @@ import {
     User
 } from "@/api/interfaces";
 import Footer from "@/components/footer/footer";
+import {createNotification} from "@/components/notification/noti";
 import {CxSocket} from "@/socket/cxsocket";
 import axios, {AxiosResponse} from "axios";
 import Image from "next/image";
@@ -46,12 +47,13 @@ export const ConfigSite = (props: {users: UserData[], serverData: ServerInfo, us
                 "authorization": `${props.userData.token}` 
             }
         });
-        // TODO: Alert System
+            
+        createNotification("Updated Server Config!", 5);
     }    
 
     const appendNewUser = async (e: BaseSyntheticEvent) => {
+        // TODO: Sockets for adding user to server
         e.preventDefault();
-/*
         const req = await axios({
             url: process.env.NEXT_PUBLIC_DASHBOARD_API + "/user/publicInfo",
             method: "GET",
@@ -68,7 +70,9 @@ export const ConfigSite = (props: {users: UserData[], serverData: ServerInfo, us
         }
 
         setUsers((old) => [...old, user_]); 
-  */  
+        createNotification(`Added ${user_.name} to ${props.serverData.serverName}!`, 5);
+        createNotification("Click update to save changes...", 3);
+
         const inputElm = document.getElementById("newUserID");
         if (inputElm !== null) {
             (inputElm as HTMLInputElement).value = "";        
@@ -103,6 +107,26 @@ export const ConfigSite = (props: {users: UserData[], serverData: ServerInfo, us
         }
     }
 
+    const removeMember = async (e: BaseSyntheticEvent, memberToRemove: string) => {
+        // TODO: Sockets for kicking member off
+        const req = await axios({
+            url: process.env.NEXT_PUBLIC_DASHBOARD_API + "/integration/removeMember",
+            method: "POST",
+            data: {
+                "dashID": props.serverData.dashID,
+                "memberToRemove": memberToRemove
+            },
+            headers: {
+                "authorization": `${props.userData.token}`    
+            }
+        });
+        
+        if (req.status === 200) {
+            setUsers(users.filter((u) => u.id !== memberToRemove));
+            createNotification("Removed member from " + props.serverData.serverName, 5);
+        }
+    }
+
     return (
         <>
             <form className={style.form} onSubmit={updateServer}>
@@ -133,10 +157,7 @@ export const ConfigSite = (props: {users: UserData[], serverData: ServerInfo, us
                                     }
                                     <span>{user.name === undefined ? user.id : user.name}</span>
                                     {user.owner === undefined && 
-                                        <button onClick={() => {
-                                            setUsers(users.filter((u) => u.id !== user.id));
-                                            // Might implement deletion here aswell
-                                        }}>X</button>
+                                        <button onClick={async (e) => {removeMember(e, user.id)}}>X</button>
                                     }
                                 </section>
                             );
@@ -146,6 +167,7 @@ export const ConfigSite = (props: {users: UserData[], serverData: ServerInfo, us
                         <input type="text" id="newUserID" name="newUser" placeholder="User ID" onChange={
                                 (e: BaseSyntheticEvent) => setNewUserID(e.target.value)
                         }></input>
+                        <input type="button" onClick={appendNewUser} value="Add User"></input>
                     </div>
                 </section>
                 <input type="submit" value="Update"></input>

@@ -184,8 +184,7 @@ integrationRouter.post("/remove", async (req, res) => {
         }
 
         for (const temp of validate.server.allowedUsers) {
-            console.log(temp);
-            await db.collection("servers").updateOne({"id": temp}, {$pull: {"linkedServers": dashID}})
+            await db.collection("users").updateOne({"id": temp}, {$pull: {"linkedServers": dashID}})
         }
 
         await db.collection("servers").deleteOne({"dashID": dashID});
@@ -196,4 +195,38 @@ integrationRouter.post("/remove", async (req, res) => {
         res.status(500);
     }
 
+});
+
+integrationRouter.post("/removeMember", async (req ,res) => {
+    try {
+        if (req.headers.authorization === undefined) {
+            return res.status(401);
+        }
+        if (req.body.dashID === undefined) {
+            return res.status(400);
+        }
+
+        const token = req.headers.authorization;
+        const dashID = req.body.dashID;
+        const memberToRemove = req.body.memberToRemove;
+
+        const validate = await validateIntegration(dashID, token, true);
+        if (!validate.success) {
+            return res.status(401);
+        }
+
+        if (validate.server.creator === memberToRemove) {
+            return res.status(400);
+        }
+
+        await db.collection("servers").updateOne({"dashID": dashID}, {$pull: {"allowedUsers": memberToRemove}});
+        await db.collection("users").updateOne({"id": memberToRemove}, {$pull: {"linkedServers": dashID}});
+
+        console.log(await db.collection("servers").find({}).toArray());
+
+        return res.status(200).json({});
+    } catch (ex) {
+        console.log(ex);
+        res.status(500);
+    }
 });

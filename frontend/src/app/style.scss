@@ -175,3 +175,20 @@ button, input[type="button"] {
         cursor: pointer;
     }
 }
+
+.notifications {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1rem;
+
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+
+    .notification {
+        background-color: rgb(var(--accent));
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: var(--shdw1);
+    }
+}
