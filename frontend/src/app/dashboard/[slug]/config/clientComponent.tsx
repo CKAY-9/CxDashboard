@@ -5,6 +5,7 @@ import {
     User
 } from "@/api/interfaces";
 import Footer from "@/components/footer/footer";
+import {CxSocket} from "@/socket/cxsocket";
 import axios from "axios";
 import Link from "next/link";
 import {
@@ -33,7 +34,6 @@ export const ConfigSite = (props: {serverData: ServerInfo, userData: User}) => {
                 "authorization": `${props.userData.token}` 
             }
         });
-
         // TODO: Alert System
     }    
 
@@ -59,6 +59,16 @@ export const ConfigSite = (props: {serverData: ServerInfo, userData: User}) => {
                 "authorization": `${props.userData.token}` 
             }
         });
+
+        const socket = new CxSocket(props.serverData.dashID);
+        socket.onOpen = () => {
+            if (socket.socket === null) return;
+            socket.socket.send(JSON.stringify({
+                "id": "forceExitServer",
+                "dashID": props.serverData.dashID
+            }));   
+            socket.socket.close();
+        }
 
         if (req.status === 200) {
             window.location.href = "/dashboard";

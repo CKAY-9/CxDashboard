@@ -85,10 +85,24 @@ export class SocketComponent extends Component<any, any> {
             {
                 "id": "connectionResponse",
                 "do": (data: {id: string, online: boolean}) => {
-                    console.log(data);
                     this.setState({online: data.online});
                 }
             },
+            {
+                "id": "updateServerStatus",
+                "do": (data: {id: string, online: boolean}) => {
+                    this.setState({online: data.online});
+                }
+            }, 
+            {
+                "id": "forceExitServer",
+                "do": (data: {id: string, reason: string}) => {
+                    useRouter().push("/dashboard");
+                    if (typeof(window) !== undefined) {
+                        window.location.href = "/dashboard";
+                    }
+                }
+            }
         )
         this.socket.connect();
         switch (this.state.gameType) {
