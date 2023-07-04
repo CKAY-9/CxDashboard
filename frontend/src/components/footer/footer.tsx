@@ -8,7 +8,7 @@ const Footer = () => {
                     <strong>Navigation</strong>
                     <Link href="/">Home</Link>
                     <Link href="/login">Login</Link>
-                    <Link href="https://github.com/Camerxxn/CxDashboard" target="_blank">Github</Link>
+                    <Link href="https://github.com/CKAY-9/CxDashboard" target="_blank">Github</Link>
                 </section>
                 <section>
                     <strong>Dashboard</strong>
@@ -17,7 +17,7 @@ const Footer = () => {
                 </section>
             </nav>
             <span>
-                Made with ❤️ by <Link href="https://github.com/Camerxxn" target="_blank">Camerxxn</Link>
+                Made with ❤️ by <Link href="https://github.com/CKAY-9" target="_blank">CKAY-9</Link>
             </span>
         </footer>
     );

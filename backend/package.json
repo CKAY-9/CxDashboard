@@ -1,6 +1,6 @@
 {
 	"main": "./dist/index.js",
-	"author": "Camerxn",
+	"author": "CKAY-9",
 	"scripts": {
 		"dev": "nodemon .",
 		"watch": "tsc -w",
