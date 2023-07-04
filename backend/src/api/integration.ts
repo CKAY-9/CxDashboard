@@ -85,7 +85,6 @@ integrationRouter.post("/updateServerStatus", async (req, res) => {
             return res.status(401);
         }
         if (!(await db.collection("servers").findOne({dashID: dashID}))) {
-            await client.close();
             return res.status(400);
         }
         // update status
@@ -111,7 +110,7 @@ integrationRouter.post("/changeServerName", async (req, res) => {
         const dashID = req.body.dashID;
         const serverName = req.body.serverName;
         
-        const validate = await validateIntegration(dashID, token);
+        const validate = await validateIntegration(dashID, token, true);
         if (!validate.success) {
             return res.status(401);
         }
@@ -139,7 +138,7 @@ integrationRouter.post("/update", async (req, res) => {
         const serverName = req.body.serverName;
         const users: string[] = req.body.users;
 
-        const validate = await validateIntegration(dashID, token);
+        const validate = await validateIntegration(dashID, token, true);
         if (!validate.success) {
             return res.status(401);
         }

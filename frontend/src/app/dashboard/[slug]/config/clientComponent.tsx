@@ -120,7 +120,17 @@ export const ConfigSite = (props: {users: UserData[], serverData: ServerInfo, us
                 "authorization": `${props.userData.token}`    
             }
         });
-        
+
+        const socket = new CxSocket(props.serverData.dashID);
+        socket.onOpen = () => {
+            if (socket.socket === null) return;
+            socket.socket.send(JSON.stringify({
+                "id": "forceExitServer",
+                "dashID": props.serverData.dashID
+            }));   
+            socket.socket.close();
+        }
+
         if (req.status === 200) {
             setUsers(users.filter((u) => u.id !== memberToRemove));
             createNotification("Removed member from " + props.serverData.serverName, 5);
